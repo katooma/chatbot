@@ -1,0 +1,7 @@
+*.exe
+*.sw[po]
+*~
+/deps
+/discordia.log
+/discordtoken.txt
+/gateway.json
