@@ -1,4 +1,4 @@
-pcall(os.remove, 'discordia.log')
+﻿pcall(os.remove, 'discordia.log')
 pcall(os.remove, 'gateway.json')
 math.randomseed(os.time())
 local discordia = require('discordia')
@@ -41,6 +41,13 @@ local parsemsg = function(message)
   if (catbot.log_messages) then
     print(message.channel.id, message.author.tag, message.content)
   end
+
+  local msg = message.content:upper()
+
+  if (msg:match('TRANNY')) then
+    message:addReaction('😡')
+  end
+
   if (message.author.bot) then
     return
   end
@@ -49,8 +56,6 @@ local parsemsg = function(message)
   if (message.content:match('474661229483393057')) then
     bot_mentioned = true
   end
-
-  local msg = message.content:upper()
 
   if (bot_mentioned) then
     if (msg:match('HE[LW][LW]O')) then
