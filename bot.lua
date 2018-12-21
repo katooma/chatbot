@@ -12,7 +12,8 @@ end
 
 local http_get = function(url)
   local head, body = http.request('GET', url, {
-   {'User-Agent', 'sheshbot'}
+   {'User-Agent', 'sheshbot'},
+   {'From', 'sheshbot@0xc9.net'},
   })
   return body
 end
@@ -54,36 +55,6 @@ local parsemsg = function(message)
   if (bot_mentioned) then
     if (msg:match('HE[LW][LW]O')) then
       message:reply('Hewwo!~')
-      return
-    end
-
-    if (msg:match('HELP')) then
-      local helptext = "**Help**\n\n"
-      helptext = helptext .. "`/roll <die>`: Decently random random number generator. Examples: `/roll d6`, `/roll 2d4`\n"
-      helptext = helptext .. "`geek joke`: Geek joke\n"
-      helptext = helptext .. "`buzzwords`: Corporate ~~cancer~~ buzzwords\n"
-      helptext = helptext .. "`be like bill`\n"
-      helptext = helptext .. "`ron swanson`\n"
-      helptext = helptext .. "`cat picture`\n"
-      helptext = helptext .. "`random advice`\n"
-      helptext = helptext .. "`product idea`\n"
-      helptext = helptext .. "\n"
-      helptext = helptext .. "Reaction images:\n"
-      helptext = helptext .. "`s!excuseme`\n"
-      helptext = helptext .. "`s!perv`\n"
-      helptext = helptext .. "`s!several`\n"
-      helptext = helptext .. "`s!uh`\n"
-      helptext = helptext .. "\n"
-      helptext = helptext .. "You can also ask me questions! Just be sure to mention me first.\n"
-      if (message.author.id == '394766718494441493') then
-        helptext = helptext .. "\n"
-        helptext = helptext .. "========================================"
-        helptext = helptext .. "Admin commands that only <@394766718494441493> can use:\n"
-        helptext = helptext .. "`=0 <channel> <text>` Assume direct control\n"
-        helptext = helptext .. "`=1 <text>` Assume direct control but faster\n"
-        helptext = helptext .. "`=2 <lua>` Execute raw Lua code\n"
-      end
-      message:reply(helptext)
       return
     end
 
@@ -186,6 +157,47 @@ local parsemsg = function(message)
       'snowball.png',
     }
     message:reply{file = 'img/uh/' .. reactions[math.random(#reactions)]}
+    return
+  end
+
+  if (message.content:match('^s!pat')) then
+    if (message.mentionedUsers[1]) then
+      local id = message.mentionedUsers[1][1]
+      if (message.author.id == id) then
+        message:reply{
+          content = '<@' .. message.author.id .. '> is petting themselves!',
+          file = 'img/pat/self.gif',
+        }
+      else
+        message:reply{
+          content = '<@' .. message.author.id .. '> has given <@' .. id .. '> headpats!',
+          file = 'img/pat/' .. tostring(math.random(5)) .. '.gif',
+        }
+      end
+      return
+    else
+      message:reply('Who do you want to pat?')
+      return
+    end
+  end
+
+  if (message.content == 's!help') then
+    local fp = io.open('./help.txt', 'r')
+    if not (fp) then
+      message:reply('Could not read `help.txt`')
+      return
+    end
+    message:reply(fp:read('*a'))
+    fp:close()
+    if (message.author.id == '394766718494441493') then
+      fp = io.open('./adminhelp.txt', 'r')
+      if not (fp) then
+        message:reply('Could not read `adminhelp.txt`')
+        return
+      end
+      message:reply(fp:read('*a'))
+      fp:close()
+    end
     return
   end
 

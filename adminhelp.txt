@@ -1,0 +1,6 @@
+﻿========================================
+Admin commands that only <@394766718494441493> can use:
+
+ • `=0 <channel> <text>` Post _text_ in _channel_.
+ • `=1 <text>` Post _text_ in current channel and delete command.
+ • `=2 <lua>` Execute raw Lua code. (Posts returned value, if any)

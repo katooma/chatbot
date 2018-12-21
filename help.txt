@@ -1,0 +1,26 @@
+﻿**Help**
+
+Triggers (usage example: `@catbot say a geek joke`)
+ • `be like bill`: Random "Be Like Bill" meme
+ • `buzzwords`: Corporate ~~cancer~~ buzzwords (can you decipher the real meanings?)
+ • `cat picture`: Currency of the internet
+ • `geek joke`: Geek joke
+ • `product idea`: With the success of "github for lesbians" comes a slew of other inane suggestions.
+ • `random advice`: Actual quality advice.
+ • `ron swanson`: Ron Swanson quotes
+
+Reaction images: (use like with Tatsumaki)
+ • `s!excuseme`: *Looks up from newspaper*
+ • `s!perv`: I don't know what's going on but I want in!
+ • `s!several`: *Several people are typing...*
+ • `s!uh`: The computer meme.
+
+ • `s!pat <user>`: Headpats FTW!
+
+Other commands:
+ • `s!help`: This message.
+ • `s!gitlab`: Link to THE SAUCE
+
+You can also ask me questions! Just be sure to mention me, and end your question with a question mark.
+
+Soon, I'll be able to have actual conversations with people!
