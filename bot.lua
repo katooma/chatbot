@@ -166,12 +166,12 @@ local parsemsg = function(message)
       if (message.author.id == id) then
         message:reply{
           content = '<@' .. message.author.id .. '> is petting themselves!',
-          file = 'img/pat/self.gif',
+          file = 'img/pat/self' .. tostring(math.random(2)) .. '.gif',
         }
       else
         message:reply{
           content = '<@' .. message.author.id .. '> has given <@' .. id .. '> headpats!',
-          file = 'img/pat/' .. tostring(math.random(5)) .. '.gif',
+          file = 'img/pat/' .. tostring(math.random(7)) .. '.gif',
         }
       end
       return
