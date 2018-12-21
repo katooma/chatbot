@@ -27,13 +27,19 @@ local stretch_table = function(t)
   return r
 end
 
+catbot = {
+  log_messages = false, -- print all messages to console
+}
+
 client:on('ready', function()
   print('Logged in as ' .. client.user.username)
   client:setGame('Neko Atsume')
 end)
 
 local parsemsg = function(message)
-  print(message.channel.id, message.author.tag, message.content)
+  if (catbot.log_messages) then
+    print(message.channel.id, message.author.tag, message.content)
+  end
   if (message.author.bot) then
     return
   end
@@ -69,6 +75,14 @@ local parsemsg = function(message)
       helptext = helptext .. "`s!uh`\n"
       helptext = helptext .. "\n"
       helptext = helptext .. "You can also ask me questions! Just be sure to mention me first.\n"
+      if (message.author.id == '394766718494441493') then
+        helptext = helptext .. "\n"
+        helptext = helptext .. "========================================"
+        helptext = helptext .. "Admin commands that only <@394766718494441493> can use:\n"
+        helptext = helptext .. "`=0 <channel> <text>` Assume direct control\n"
+        helptext = helptext .. "`=1 <text>` Assume direct control but faster\n"
+        helptext = helptext .. "`=2 <lua>` Execute raw Lua code\n"
+      end
       message:reply(helptext)
       return
     end
@@ -115,8 +129,27 @@ local parsemsg = function(message)
     end
 
     do
-      local question = trim(message.content:gsub('<.*>', ''))
-      if (question:match('\\?$')) then
+      local question = trim(message.content:gsub('<.*>', '')):upper()
+      if (question:match('%?$')) then
+        if (question:match('^HOW MANY') or question:match('^HOW MUCH')) then
+          -- amount
+          local responses = stretch_table{
+            '69,105.',
+            '_num_.',
+            '_num_.',
+            '_num_.',
+            'Hmm... _num_?',
+            '_num_!',
+            '_num_?',
+            'At least _num_.',
+            '_num_. (I think.)',
+            'Probably _num_.',
+          }
+          local r = responses[math.random(#responses)]:gsub('_num_', tostring(math.random(100)))
+          message:reply(r)
+          return
+        end
+
         -- boolean question
         local answers = stretch_table{
           'Yes.',
@@ -178,7 +211,7 @@ local parsemsg = function(message)
   end
 
   if (message.content:match('^/setwd') and (message.author.id == '394766718494441493')) then
-    _weighteddice = tonumber(message.content:match(' +(.*)$'))
+    catbot._weighteddice = tonumber(message.content:match(' +(.*)$'))
     return
   end
 
@@ -196,11 +229,11 @@ local parsemsg = function(message)
       s = s + math.random(1, m)
     end
     --
-    if (_weighteddice) then
-      if (_weighteddice >= n) and (_weighteddice <= (m * n)) then
-        s = _weighteddice
+    if (catbot._weighteddice) then
+      if (catbot._weighteddice >= n) and (catbot._weighteddice <= (m * n)) then
+        s = catbot._weighteddice
       end
-      _weighteddice = nil
+      catbot._weighteddice = nil
     end
     --
     message:reply('<@' .. message.author.id .. '> rolled ' .. s)
