@@ -12,8 +12,8 @@ end
 
 local http_get = function(url)
   local head, body = http.request('GET', url, {
-   {'User-Agent', 'sheshbot'},
    {'From', 'sheshbot@0xc9.net'},
+   {'User-Agent', 'sheshbot'},
   })
   return body
 end
@@ -49,6 +49,12 @@ local parsemsg = function(message)
   end
 
   if (message.author.bot) then
+    if (message.mentionedUsers[1]) then
+      local id = message.mentionedUsers[1][1]
+      if (id == client.user.id) then
+        message:reply('<:owokitty:526914511840477195>')
+      end
+    end
     return
   end
 
@@ -142,6 +148,19 @@ local parsemsg = function(message)
     end
   end
 
+  if (message.content:match('^s!spam ')) then
+    local s = message.content:sub(8)
+    local r = s
+    while (true) do
+      local nr = r .. s
+      if (#nr > 2000) then
+        message:reply(r)
+        return
+      end
+      r = nr
+    end
+  end
+
   if (message.content == 's!excuseme') then
     message:reply{file = 'img/excuseme.jpg'}
     return
@@ -173,6 +192,8 @@ local parsemsg = function(message)
           content = '<@' .. message.author.id .. '> is petting themselves!',
           file = 'img/pat/self' .. tostring(math.random(2)) .. '.gif',
         }
+      elseif (id == client.user.id) then
+        message:reply('<a:blobblush:526911657679781888>')
       else
         message:reply{
           content = '<@' .. message.author.id .. '> has given <@' .. id .. '> headpats!',
@@ -207,9 +228,12 @@ local parsemsg = function(message)
   end
 
   if (message.content:match('^=2') and (message.author.id == '394766718494441493')) then
-    local s = loadstring(message.content:sub(4))
-    local r = tostring(s())
-    message:reply(r)
+    local f = "local client, message = ...\n"
+    local s = loadstring(f .. message.content:sub(4))
+    local r = s(client, message)
+    if (r) then
+      message:reply(tostring(r))
+    end
     return
   end
 
