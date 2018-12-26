@@ -19,6 +19,7 @@ Reaction images: (use like with Tatsumaki)
 
 Other commands:
  • `s!help`: This message.
+ • `s@help`: Display commands that may be relevant to a moderator.
  • `s!gitlab`: Link to THE SAUCE
 
 You can also ask me questions! Just be sure to mention me, and end your question with a question mark.

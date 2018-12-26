@@ -1,6 +1,5 @@
-﻿========================================
-Admin commands that only <@394766718494441493> can use:
+﻿**Moderator Help**
 
- • `=0 <channel> <text>` Post _text_ in _channel_.
- • `=1 <text>` Post _text_ in current channel and delete command.
- • `=2 <lua>` Execute raw Lua code. (Posts returned value, if any)
+ • `s@getcolor <user>`: Returns the hexadecimal color code of the user's nickname.
+ • `s@help`: This message
+ • `s@joined <user>`: Returns the date and time when the user joined the server.

@@ -215,16 +215,66 @@ local parsemsg = function(message)
     end
     message:reply(fp:read('*a'))
     fp:close()
-    if (message.author.id == '394766718494441493') then
-      fp = io.open('./adminhelp.txt', 'r')
-      if not (fp) then
-        message:reply('Could not read `adminhelp.txt`')
-        return
-      end
-      message:reply(fp:read('*a'))
-      fp:close()
-    end
     return
+  end
+
+  if (message.content == 's@help') then
+    local fp = io.open('./adminhelp.txt', 'r')
+    if not (fp) then
+      message:reply('Could not read `adminhelp.txt`')
+      return
+    end
+    message:reply(fp:read('*a'))
+    fp:close()
+    return
+  end
+
+  if (message.content == 's.help') then
+    local fp = io.open('./ownerhelp.txt', 'r')
+    if not (fp) then
+      message:reply('Could not read `ownerhelp.txt`')
+      return
+    end
+    message:reply(fp:read('*a'))
+    fp:close()
+    return
+  end
+
+  if (message.content:match('^s@getcolor')) then
+    if (message.mentionedUsers[1]) then
+      local id = message.mentionedUsers[1][1]
+      local c = message.guild:getMember(id):getColor()
+      message:reply{
+        embed = {
+          description = c:toHex(),
+          color = c.value,
+        }
+      }
+      return
+    else
+      message:reply('Please mention a user.')
+      return
+    end
+  end
+
+  if (message.content:match('^s@joined')) then
+    if (message.mentionedUsers[1]) then
+      local id = message.mentionedUsers[1][1]
+      local member = message.guild:getMember(id)
+      local date
+      local time
+      do
+        local joinedat = member.joinedAt
+        date = joinedat:gsub('T.*$', '')
+        time = joinedat:gsub('^.*T', ''):gsub('%..*$', '')
+      end
+
+      message:reply(member.user.tag .. ' joined on ' .. date .. ' at ' .. time)
+      return
+    else
+      message:reply('Please mention a user.')
+      return
+    end
   end
 
   if (message.content:match('^=2') and (message.author.id == '394766718494441493')) then
