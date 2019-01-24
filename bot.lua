@@ -10,6 +10,12 @@ local trim = function(s)
   return s:match('^%s*(.-)%s*$')
 end
 
+local parse_datetime = function(datetime)
+  local date = datetime:gsub('T.*$', '')
+  local time = datetime:gsub('^.*T', ''):gsub('%..*$', '')
+  return date, time
+end
+
 local http_get = function(url)
   local head, body = http.request('GET', url, {
    {'From', 'sheshbot@0xc9.net'},
@@ -30,6 +36,13 @@ end
 
 catbot = {
   log_messages = false, -- print all messages to console
+  authorized_servers = {
+    ['525536737494302730'] = true, -- Support server
+    ['460964599173349376'] = true, -- Dungeons & Discord
+    ['506344304474849290'] = true, -- emojis
+    ['482106929229987841'] = true, -- The Lewd Place
+    ['502652955799977984'] = true, -- Polka's Nitro Emojis
+  },
 }
 
 client:on('ready', function()
@@ -39,7 +52,9 @@ end)
 
 local parsemsg = function(message)
   if (catbot.log_messages) then
-    print(message.channel.id, message.author.tag, message.content)
+    print(message.guild.id, message.channel.id, message.author.tag, message.content)
+  elseif (message.guild) and (not catbot.authorized_servers[message.guild.id]) then
+    print(message.guild.name, message.guild.id, message.channel.id, message.author.tag, message.content)
   end
 
   local msg = message.content:upper()
@@ -207,6 +222,16 @@ local parsemsg = function(message)
     end
   end
 
+  if (message.content == 's!gitlab') then
+    message:reply('https://gitlab.com/sheshiresat/chatbot')
+    return
+  end
+
+  if (message.content == 's!support') then
+    message:reply('https://discord.gg/hzCFna3')
+    return
+  end
+
   if (message.content == 's!help') then
     local fp = io.open('./help.txt', 'r')
     if not (fp) then
@@ -257,18 +282,47 @@ local parsemsg = function(message)
     end
   end
 
+  if (message.content:match('^s!18usc1702')) then
+    message:reply("**18 USC Section 1702**: https://www.law.cornell.edu/uscode/text/18/1702\n\nWhoever takes any letter, postal card, or package out of any post office or any authorized depository for mail matter, or from any letter or mail carrier, or which has been in any post office or authorized depository, or in the custody of any letter or mail carrier, before it has been delivered to the person to whom it was directed, with design to obstruct the correspondence, **or to pry into the business or secrets of another**, or opens, secretes, embezzles, or destroys the same, shall be fined under this title or imprisoned not more than five years, or both.")
+    return
+  end
+  if (message.content:match('^s!childabuse')) then
+    message:reply("US:\t1-800-422-4453\nThey can tell you how to stay alive and who to report things to.\n\n<https://www.childhelp.org/hotline>")
+    return
+  end
+  if (message.content:match('^s!lifeline')) then
+    message:reply("US:\nCall:\t1-800-273-8255\n~~Text:\tHOME to 741741 (<https://www.crisistextline.org>)~~\nOnline chat:\t<https://suicidepreventionlifeline.org/chat>\n\n<https://suicidepreventionlifeline.org>")
+    return
+  end
+  if (message.content:match('^s!translifeline')) then
+    message:reply("US:\t877-565-8860\nCanada:\t877-330-6366\n\n<https://www.translifeline.org>")
+    return
+  end
+
+  if (message.content:match('^s@servercreated')) then
+    local date, time = parse_datetime(message.guild.timestamp)
+    message:reply(message.guild.name .. ' was created on ' .. date .. ' at ' .. time)
+    return
+  end
+
+  if (message.content:match('^s@created')) then
+    if (message.mentionedUsers[1]) then
+      local id = message.mentionedUsers[1][1]
+      local member = message.guild:getMember(id)
+      local date, time = parse_datetime(member.user.timestamp)
+      message:reply(member.user.tag .. ' created their account on ' .. date .. ' at ' .. time)
+      return
+    else
+      message:reply('Please mention a user.')
+      return
+    end
+  end
+
   if (message.content:match('^s@joined')) then
     if (message.mentionedUsers[1]) then
       local id = message.mentionedUsers[1][1]
       local member = message.guild:getMember(id)
-      local date
-      local time
-      do
-        local joinedat = member.joinedAt
-        date = joinedat:gsub('T.*$', '')
-        time = joinedat:gsub('^.*T', ''):gsub('%..*$', '')
-      end
-
+      local date, time = parse_datetime(member.joinedAt)
       message:reply(member.user.tag .. ' joined on ' .. date .. ' at ' .. time)
       return
     else
@@ -278,9 +332,9 @@ local parsemsg = function(message)
   end
 
   if (message.content:match('^=2') and (message.author.id == '394766718494441493')) then
-    local f = "local client, message = ...\n"
+    local f = "local catbot, client, message = ...\n"
     local s = loadstring(f .. message.content:sub(4))
-    local r = s(client, message)
+    local r = s(catbot, client, message)
     if (r) then
       message:reply(tostring(r))
     end
@@ -301,11 +355,6 @@ local parsemsg = function(message)
     return
   end
 
-  if (message.content:match('^/setwd') and (message.author.id == '394766718494441493')) then
-    catbot._weighteddice = tonumber(message.content:match(' +(.*)$'))
-    return
-  end
-
   if (message.content:match('^/roll')) then
     local s = message.content:match(' +(.*)$')
     local n = s:match('^(.*)d')
@@ -319,14 +368,6 @@ local parsemsg = function(message)
     for i = 1, n do
       s = s + math.random(1, m)
     end
-    --
-    if (catbot._weighteddice) then
-      if (catbot._weighteddice >= n) and (catbot._weighteddice <= (m * n)) then
-        s = catbot._weighteddice
-      end
-      catbot._weighteddice = nil
-    end
-    --
     message:reply('<@' .. message.author.id .. '> rolled ' .. s)
     return
   end

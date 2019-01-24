@@ -3,3 +3,5 @@
  • `s@getcolor <user>`: Returns the hexadecimal color code of the user's nickname.
  • `s@help`: This message
  • `s@joined <user>`: Returns the date and time when the user joined the server.
+ • `s@created <user>`: Returns the date and time when the user created their account.
+ • `s@servercreated`: Returns the date and time when the server was created.
