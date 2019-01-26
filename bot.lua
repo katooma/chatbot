@@ -78,6 +78,11 @@ local parsemsg = function(message)
     bot_mentioned = true
   end
 
+  if (msg:match('^GOD I WISH THAT WERE ME$')) then
+    message:reply{file = 'img/giwtwm.png'}
+    return
+  end
+
   if (bot_mentioned) then
     if (msg:match('HE[LW][LW]O')) then
       message:reply('Hewwo!~')
