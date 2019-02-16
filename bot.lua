@@ -19,7 +19,7 @@ end
 local http_get = function(url)
   local head, body = http.request('GET', url, {
    {'From', 'sheshbot@0xc9.net'},
-   {'User-Agent', 'sheshbot'},
+   {'User-Agent', 'sheshbot/20181220 (Windows NT) Bot/public'},
   })
   return body
 end
